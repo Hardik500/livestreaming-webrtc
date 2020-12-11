@@ -25,13 +25,24 @@
 
 <body>
    <div class="main">
-      <div class="main__left">
-         <div class="main__videos" style="display: flex;">
+      <div class="main__left main__left_show">
+         <div class="main__videos main__videos_show">
             <div id="video-grid">
             </div>
          </div>
          <div class="video__player">
-            <iframe src="https://hardik500.github.io/livestreaminapp/#/" width="850" height="400"></iframe>
+            <iframe src="https://hardik500.github.io/livestreaminapp/#/" width="1080" height="500"></iframe>
+         </div>
+         <div class="video__player_controls">
+            <div class="rotate_icon">
+               <img src="https://www.materialui.co/materialIcons/image/rotate_right_white_192x192.png" />
+            </div>
+            <div class="zoom-in">
+               <span>➕</span>
+            </div>
+            <div class="zoom-out">
+               ➖
+            </div>
          </div>
 
          <div class="main__controls">
@@ -62,7 +73,8 @@
             </div>
          </div>
       </div>
-      <div class="main__right" style="display: flex;">
+      <div class="main__right main__right_show">
+         <div class="main__chat_close leave_meeting">X</div>
          <div class="main__header">
             <h6>Chat</h6>
          </div>

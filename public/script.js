@@ -9,6 +9,7 @@ let myVideoStream;
 const myVideo = document.createElement('video')
 myVideo.muted = true;
 const peers = {}
+
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
@@ -49,7 +50,22 @@ myPeer.on('open', id => {
   socket.emit('join-room', ROOM_ID, id)
 })
 
-function connectToNewUser(userId, stream) {
+// VARIABLE DECLARATIONS
+
+const main_left = document.querySelector(".main__left");
+const main_right = document.querySelector(".main__right");
+const chatBtn = document.querySelector("#chat")
+const participantBtn = document.querySelector('#participants');
+const main__videos = document.querySelector(".main__videos");
+const mute_btn = document.querySelector('.main__mute_button');
+const video_btn = document.querySelector('.main__video_button');
+const chat_close = document.querySelector('.main__chat_close');
+const rotate_icon = document.querySelector(".rotate_icon");
+const video_player = document.querySelector(".video__player > iframe");
+const zoom_in = document.querySelector(".zoom-in");
+const zoom_out = document.querySelector(".zoom-out");
+
+const connectToNewUser = (userId, stream) => {
   const call = myPeer.call(userId, stream)
   const video = document.createElement('video')
   call.on('stream', userVideoStream => {
@@ -62,15 +78,13 @@ function connectToNewUser(userId, stream) {
   peers[userId] = call
 }
 
-function addVideoStream(video, stream) {
+const addVideoStream = (video, stream) => {
   video.srcObject = stream
   video.addEventListener('loadedmetadata', () => {
     video.play()
   })
   videoGrid.append(video)
 }
-
-
 
 const scrollToBottom = () => {
   var d = $('.main__chat_window');
@@ -90,8 +104,7 @@ const muteUnmute = () => {
 }
 
 const playStop = () => {
-  console.log('object')
-  let enabled = myVideoStream.getVideoTracks()[0].enabled;
+  const enabled = myVideoStream.getVideoTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getVideoTracks()[0].enabled = false;
     setPlayVideo()
@@ -106,7 +119,7 @@ const setMuteButton = () => {
     <i class="fas fa-microphone"></i>
     <span>Mute</span>
   `
-  document.querySelector('.main__mute_button').innerHTML = html;
+  mute_btn.innerHTML = html;
 }
 
 const setUnmuteButton = () => {
@@ -114,7 +127,7 @@ const setUnmuteButton = () => {
     <i class="unmute fas fa-microphone-slash"></i>
     <span>Unmute</span>
   `
-  document.querySelector('.main__mute_button').innerHTML = html;
+  mute_btn.innerHTML = html;
 }
 
 const setStopVideo = () => {
@@ -122,7 +135,7 @@ const setStopVideo = () => {
     <i class="fas fa-video"></i>
     <span>Stop Video</span>
   `
-  document.querySelector('.main__video_button').innerHTML = html;
+  video_btn.innerHTML = html;
 }
 
 const setPlayVideo = () => {
@@ -130,7 +143,7 @@ const setPlayVideo = () => {
   <i class="stop fas fa-video-slash"></i>
     <span>Play Video</span>
   `
-  document.querySelector('.main__video_button').innerHTML = html;
+  video_btn.innerHTML = html;
 }
 
 const hideUnhideChat = () => {
@@ -143,17 +156,28 @@ const hideUnhideChat = () => {
   <i class="fas fa-comment-alt"></i>
     <span>Hide Chat</span>
   `
-  
-  if(document.querySelector(".main__right").style.display === "flex"){
-    document.querySelector(".main__right").style.display = "none";
-    document.querySelector('#chat').innerHTML = showChat;
+
+  if (main_right.classList.contains("main__right_show")) {
+    main_right.classList.remove("main__right_show")
+    main_right.classList.add("main__right_hide")
+    chatBtn.innerHTML = showChat;
   }
-  else{
-    document.querySelector(".main__right").style.display = "flex";
-    document.querySelector('#chat').innerHTML = hideChat;
+  else {
+    main_right.classList.remove("main__right_hide")
+    main_right.classList.add("main__right_show")
+    chatBtn.innerHTML = hideChat;
   }
 
-  
+  if (window.matchMedia('screen and (max-width: 450px)').matches) {
+    if (main_left.classList.contains("main__left_show")) {
+      main_left.classList.remove("main__left_show")
+      main_left.classList.add("main__left_hide")
+    }
+    else {
+      main_left.classList.remove("main__left_hide")
+      main_left.classList.add("main__left_show")
+    }
+  }
 }
 
 const hideUnhideParticipants = () => {
@@ -167,12 +191,44 @@ const hideUnhideParticipants = () => {
     <span>Hide Particpants</span>
   `
 
-  if(document.querySelector(".main__videos").style.display === "flex"){
-    document.querySelector(".main__videos").style.display = "none";
-    document.querySelector('#participants').innerHTML = showParticipants;
+  if (main__videos.classList.contains("main__videos_show")) {
+    main__videos.classList.remove("main__videos_show")
+    main__videos.classList.add("main__videos_hide")
+    participantBtn.innerHTML = showParticipants;
   }
-  else{
-    document.querySelector(".main__videos").style.display = "flex";
-    document.querySelector('#participants').innerHTML = hideParticipants;
+  else {
+    main__videos.classList.remove("main__videos_hide")
+    main__videos.classList.add("main__videos_show")
+    participantBtn.innerHTML = hideParticipants;
   }
 }
+
+chat_close.addEventListener("click", () => {
+  hideUnhideChat();
+})
+
+if (window.matchMedia('screen and (max-width: 450px)').matches) {
+  main_left.classList.remove("main__left_show")
+  main_left.classList.add("main__left_hide")
+  chatBtn.click();
+}
+
+let deg = 0;
+
+rotate_icon.addEventListener("click", () => {
+  deg = deg == 360 ? 90 : deg + 90
+  video_player.style.transform = `rotate(${deg}deg)`
+  let temp = video_player.width;
+  video_player.width = video_player.height;
+  video_player.height = temp;
+})
+
+zoom_in.addEventListener("click", () => {
+  video_player.width = parseFloat(video_player.width) + 50;
+  video_player.height = parseFloat(video_player.height) + 25;
+})
+
+zoom_out.addEventListener("click", () => {
+  video_player.width = parseFloat(video_player.width) - 50;
+  video_player.height = parseFloat(video_player.height) - 25;
+})
