@@ -60,7 +60,6 @@ const main__videos = document.querySelector(".main__videos");
 const mute_btn = document.querySelector('.main__mute_button');
 const video_btn = document.querySelector('.main__video_button');
 const chat_close = document.querySelector('.main__chat_close');
-const rotate_icon = document.querySelector(".rotate_icon");
 const video_player = document.querySelector(".video__player > iframe");
 const zoom_in = document.querySelector(".zoom-in");
 const zoom_out = document.querySelector(".zoom-out");
@@ -214,14 +213,6 @@ if (window.matchMedia('screen and (max-width: 450px)').matches) {
 }
 
 let deg = 0;
-
-rotate_icon.addEventListener("click", () => {
-  deg = deg == 360 ? 90 : deg + 90
-  video_player.style.transform = `rotate(${deg}deg)`
-  let temp = video_player.width;
-  video_player.width = video_player.height;
-  video_player.height = temp;
-})
 
 zoom_in.addEventListener("click", () => {
   video_player.width = parseFloat(video_player.width) + 50;
